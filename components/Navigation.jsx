@@ -9,11 +9,12 @@ export default function Navigation() {
     return (
         <header className="w-full py-4 border-b border-gray-400">
             <nav className="flex items-center justify-center flex-wrap">
-                <Link href="/" className="flex items-center text-gray-700 font-bold">
+                <Link href="/" className="flex items-center ">
                     <Image 
                         src={Logo} alt="Vendor"
                         height={60}
                         width={60}
+                        className="cursor-pointer"
                     />
                 </Link>
             </nav>
