@@ -7,6 +7,27 @@ export default function Repos() {
     const router = useRouter();
     const slug = router.query.slug;
 
+    const [item, setItem] = useState({
+      name: slug,
+      description: "",
+      category: "",
+      language: "",
+      price: 0,
+    });
+
+    const putRepo = async () => {
+      let { data, error } = await supabase
+        .from("repos")
+        .upsert([item], { returning: "minimal" });
+      if (error) console.log("error", error);
+      else console.log("data", data);
+    };
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      putRepo();
+      router.push("/"); 
+    };
 
     return (
       <div>
@@ -19,6 +40,10 @@ export default function Repos() {
               <textarea
                 className="border border-zinc-800 bg-zinc-700 rounded-md p-2"
                 type="text"
+                value={item.description}
+                onChange={(e) =>
+                  setItem({ ...item, description: e.target.value })
+                }
               />
             </div>
             <div className="flex flex-col mb-3">
@@ -26,26 +51,41 @@ export default function Repos() {
               <input
                 className="border border-zinc-800 bg-zinc-700 rounded-md p-2"
                 type="text"
+                value={item.category}
+                onChange={(e) => setItem({ ...item, category: e.target.value })}
               />
             </div>
             <div className="flex flex-col mb-3">
-              <label className="text-white">Type</label>
+              <label className="text-white">Language</label>
               <input
                 className="border border-zinc-800 bg-zinc-700 rounded-md p-2"
                 type="text"
+                value={item.language}
+                onChange={(e) => setItem({ ...item, language: e.target.value })}
               />
             </div>
             <div className="flex flex-col mb-3">
               <label className="text-white">Price</label>
               {/* currency you want to sell it for. */}
-              <input
-                className="border  border-zinc-800 bg-zinc-700 rounded-md p-2"
-                type="text"
-              />
+              <div className="flex w-0 flex-1 items-center">
+                <p className="font-medium text-amber-500 hover:text-slate-500 mr-4">
+                  £
+                </p>
+                <input
+                  className="border  border-zinc-800 bg-zinc-700 rounded-md p-2"
+                  type="integer"
+                  value={item.price}
+                  onChange={(e) => setItem({ ...item, price: e.target.value })}
+                />
+              </div>
             </div>
             {/* submit */}
             <div className="flex flex-col mb-3">
-              <button className="bg-zinc-700 rounded-md p-2 hover:bg-slate-500" type="submit">
+              <button
+                className="bg-zinc-700 rounded-md p-2 hover:bg-slate-500"
+                type="submit"
+                onClick={handleSubmit}
+              >
                 Sell
               </button>
             </div>
