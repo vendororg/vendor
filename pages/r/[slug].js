@@ -7,13 +7,35 @@ export default function Repos() {
     const router = useRouter();
     const slug = router.query.slug;
 
+    const [session, setSession] = useState(null);
     const [item, setItem] = useState({
-      name: slug,
+      name: ``,
       description: "",
       category: "",
       language: "",
+      link: ``,
       price: 0,
     });
+
+    useEffect(() => {
+      setSession(supabase.auth.session());
+
+      supabase.auth.onAuthStateChange((_event, session) => {
+        setSession(session);
+        setItem({
+          ...item,
+          link: `https://www.github.com/${session?.user.user_metadata.user_name}/${slug}`,
+        });
+        setItem({
+          ...item,
+          name: `${session?.user.user_metadata.user_name}/${slug}`,
+        });
+
+        // must have link before name
+      });
+      
+      
+    }, []);
 
     const putRepo = async () => {
       let { data, error } = await supabase
@@ -26,14 +48,17 @@ export default function Repos() {
     const handleSubmit = (e) => {
       e.preventDefault();
       putRepo();
-      router.push("/"); 
+      router.push("/");
     };
+    
 
     return (
       <div>
         <Navigation />
         <div className="mx-auto max-w-4xl m-10 bg-zinc-900 rounded-md p-7">
-          <h1 className="text-3xl font-bold text-white mb-3">{slug}</h1>
+          <h1 className="text-3xl font-bold text-white mb-3">
+            {session?.user.user_metadata.user_name}/{slug}
+          </h1>
           <form>
             <div className="flex flex-col mb-3">
               <label className="text-white">Description</label>
@@ -90,7 +115,6 @@ export default function Repos() {
               </button>
             </div>
           </form>
-          <div></div>
         </div>
       </div>
     );
