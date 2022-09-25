@@ -10,28 +10,19 @@ export default function Repos() {
     const [session, setSession] = useState(null);
     const [item, setItem] = useState({
       name: ``,
-      description: "",
-      category: "",
-      language: "",
       link: ``,
+      description: "",
       price: 0,
+      currency: "",
     });
 
     useEffect(() => {
       setSession(supabase.auth.session());
+      
 
       supabase.auth.onAuthStateChange((_event, session) => {
         setSession(session);
-        setItem({
-          ...item,
-          link: `https://www.github.com/${session?.user.user_metadata.user_name}/${slug}`,
-        });
-        setItem({
-          ...item,
-          name: `${session?.user.user_metadata.user_name}/${slug}`,
-        });
-
-        // must have link before name
+        
       });
       
       
@@ -46,14 +37,24 @@ export default function Repos() {
     };
 
     const handleSubmit = (e) => {
+      setItem({
+        ...item,
+        link: `https://www.github.com/${session?.user.user_metadata.user_name}/${slug}`,
+        name: `${session?.user.user_metadata.user_name}/${slug}`,
+      });
       e.preventDefault();
-      putRepo();
-      router.push("/");
+      if (item.name && item.description && item.link && item.price && item.currency) {
+        putRepo();
+        router.push("/");
+      }
     };
+
+    
     
 
     return (
       <div>
+        {console.log(item)}
         <Navigation />
         <div className="mx-auto max-w-4xl m-10 bg-zinc-900 rounded-md p-7">
           <h1 className="text-3xl font-bold text-white mb-3">
@@ -72,30 +73,22 @@ export default function Repos() {
               />
             </div>
             <div className="flex flex-col mb-3">
-              <label className="text-white">Category</label>
-              <input
-                className="border border-zinc-800 bg-zinc-700 rounded-md p-2"
-                type="text"
-                value={item.category}
-                onChange={(e) => setItem({ ...item, category: e.target.value })}
-              />
-            </div>
-            <div className="flex flex-col mb-3">
-              <label className="text-white">Language</label>
-              <input
-                className="border border-zinc-800 bg-zinc-700 rounded-md p-2"
-                type="text"
-                value={item.language}
-                onChange={(e) => setItem({ ...item, language: e.target.value })}
-              />
-            </div>
-            <div className="flex flex-col mb-3">
               <label className="text-white">Price</label>
               {/* currency you want to sell it for. */}
               <div className="flex w-0 flex-1 items-center">
-                <p className="font-medium text-amber-500 hover:text-slate-500 mr-4">
-                  £
-                </p>
+                <select
+                  className="border border-zinc-800 bg-zinc-700 rounded-md p-2 mr-4"
+                  value={item.currency}
+                  onChange={(e) =>
+                    setItem({ ...item, currency: e.target.value })
+                  }
+                >
+                  <option value="">EMPTY</option>
+                  <option value="USD">$</option>
+                  <option value="EUR">€</option>
+                  <option value="GBP">£</option>
+                </select>
+
                 <input
                   className="border  border-zinc-800 bg-zinc-700 rounded-md p-2"
                   type="integer"
@@ -119,3 +112,4 @@ export default function Repos() {
       </div>
     );
 }
+{/* <p className="font-medium text-amber-500 hover:text-slate-500 mr-4"></p>; */}

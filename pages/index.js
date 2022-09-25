@@ -8,6 +8,7 @@ import Navigation from '../components/Navigation';
 export default function Home() {
   const [session, setSession] = useState(null);
   const [repos, setRepos] = useState(null);
+  const [currency, setCurrency] = useState(null);
 
   useEffect(() => {
     setSession(supabase.auth.session());
@@ -28,7 +29,6 @@ export default function Home() {
     else setRepos(repos);
   };
 
-
   return (
     <div>
       <Navigation />
@@ -39,7 +39,22 @@ export default function Home() {
               {!session ? (
                 <Auth />
               ) : (
-                <Account key={session.user.id} session={session} />
+                <Account key={session.user.id} session={session}>
+                  <div className="flex flex-col">
+                    <select
+                      className="border border-zinc-800 bg-zinc-700 rounded-md p-2 mt-1"
+                      value={currency}
+                      onChange={(e) =>
+                        setCurrency(e.target.value)
+                      }
+                    >
+                      <option value="">EMPTY</option>
+                      <option value="USD">$</option>
+                      <option value="EUR">€</option>
+                      <option value="GBP">£</option>
+                    </select>
+                  </div>
+                </Account>
               )}
             </div>
           </section>
@@ -62,7 +77,9 @@ export default function Home() {
                   </a>
                   <div className="rounded-full ring-2 dark:ring-gray-500 px-3 py-2">
                     {/* check currency from database and check floating point */}
-                    <p className="text-gray-400">£ {repo.price}.00</p>
+                    <p className="text-gray-400">
+                      {repo.price.toFixed(2)} {repo.currency}
+                    </p>
                   </div>
                 </div>
               </div>
