@@ -1,13 +1,14 @@
-import Link from 'next/link';
 import { useState, useEffect } from "react";
 import { supabase } from "../utils/supabaseClient";
 import Auth from "../components/Auth";
 import Account from "../components/Account";
 import Navigation from '../components/Navigation';
+import React from 'react';
+import { AuthSession } from "@supabase/supabase-js";
 
 export default function Home() {
-  const [session, setSession] = useState(null);
-  const [repos, setRepos] = useState(null);
+  const [session, setSession] = useState<AuthSession | null>(null);
+  const [repos, setRepos] = useState(null)
   const [currency, setCurrency] = useState(null);
 
   useEffect(() => {

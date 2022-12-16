@@ -1,9 +1,24 @@
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import Link from "next/link";
+import React from "react";
+import { AuthSession } from "@supabase/supabase-js";
 
-export default function List({ session, children }) {
-    const [repos, setRepos] = useState(null);
+// set up a type for the repos which is an array of objects
+type Repo = Array<{
+    name: string;
+    private: string
+}>;
+
+type Props = {
+    session: AuthSession | null;
+    children?: React.ReactNode;
+}
+
+export default function List({ session, children }: Props) {
+    const [repos, setRepos] = useState<Repo | null>(null);
+
+    // typescript version of useMemo
 
     const config = useMemo(() => {
         return {
@@ -12,7 +27,7 @@ export default function List({ session, children }) {
                 Accept: "application/vnd.github.v3+json",
             },
         }
-    });
+    }, [session]);
 
     useEffect(() => {
         axios
@@ -30,14 +45,14 @@ export default function List({ session, children }) {
             <div className="mx-auto max-w-7xl m-10 bg-zinc-900 rounded-md p-7">
                 <div className="py-5 sm:px-6 flex-1 flex sm:mx-auto sm:flex sm:items-center">
                     <img
-                        src={session?.user.user_metadata.avatar_url}
+                        src={session?.user?.user_metadata.avatar_url}
                         alt="Github Avatar"
                         className="h-16 p-1 mr-6 rounded-full ring-2 ring-gray-300 dark:ring-gray-500"
                     />
                     <h3 className="text-lg font-medium leading-6 text-ink-300">
-                        {session?.user.user_metadata.user_name}
+                        {session?.user?.user_metadata.user_name}
                     </h3>
-
+                    
                 </div>
                 <div className="border-t border-gray-200">
                     {repos?.map((repo, index) => (

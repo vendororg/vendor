@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import { supabase } from "../../utils/supabaseClient";
 import Navigation from "../../components/Navigation";
 import List from "../../components/List";
+import React from "react";
+
+type Props = {
+  session: any;
+};
 
 export default function repos() {
     const [session, setSession] = useState(null);
@@ -17,14 +22,7 @@ export default function repos() {
     return (
       <div>
         <Navigation />
-        <List key={session?.user.id}  session={session} />
+        <List key={session?.user.id} session={session} children />
       </div>
     );
 }
-
-
-{/* <p>
-  Choose the repository you want to link to your site on Netlify. When you push
-  to Git, then place your price of choice on our servers and see the result on
-  te dashboard.
-</p>; */}

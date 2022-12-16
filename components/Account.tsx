@@ -11,7 +11,9 @@ export default function Account({ session, children }) {
                     alt="Github Avatar"
                     className="h-16 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500"
                 /> 
-                <button className="bg-sky-500 hover:bg-gray-100 text-ink-500 font-semibold hover:text-gray-700 py-2 px-4 rounded" onClick={() => supabase.auth.signOut()}>
+                <button 
+                    className="bg-sky-500 hover:bg-gray-100 text-ink-500 font-semibold hover:text-gray-700 py-2 px-4 rounded"
+                    onClick={() => supabase.auth.signOut()}>
                     Sign Out
                 </button>
             </div>     
